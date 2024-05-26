@@ -1,2 +1,2 @@
-artificial/movie_list.pkl filter=lfs diff=lfs merge=lfs -text
-artificial/similarity.pkl filter=lfs diff=lfs merge=lfs -text
+artificial/movie_list.h5 filter=lfs diff=lfs merge=lfs -text
+artificial/similarity.h5 filter=lfs diff=lfs merge=lfs -text

@@ -1,11 +1,15 @@
 import pickle
 import streamlit as st
 import requests
+import pandas as pd
+import h5py
 
 
 def recommend(movie):
-    index = movies[movies['title'] == movie].index[0]  # this will get index number of the movie
-    distances = sorted(list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
+    # this will get index number of the movie
+    index = movies[movies['title'] == movie].index[0]
+    distances = sorted(
+        list(enumerate(similarity[index])), reverse=True, key=lambda x: x[1])
     # x[0] is index number, x[1] is similarity
     movies_name = []
     movies_poster = []
@@ -17,7 +21,8 @@ def recommend(movie):
 
 
 def fetch_poster(movie_id):
-    url = "https://api.themoviedb.org/3/movie/{}?api_key=a077ffed7d63dbeead8a3fcb9053a0d7".format(movie_id)
+    url = "https://api.themoviedb.org/3/movie/{}?api_key=a077ffed7d63dbeead8a3fcb9053a0d7".format(
+        movie_id)
     response = requests.get(url)
     data = response.json()
     poster_path = data['poster_path']
@@ -26,8 +31,10 @@ def fetch_poster(movie_id):
 
 
 st.header("Movies Recommendation System Using Machine Learning 🎬🍿🥤")
-movies = pickle.load(open('artificial/movie_list.pkl', 'rb'))
-similarity = pickle.load(open('artificial/similarity.pkl', 'rb'))
+movies = pd.read_hdf('artificial/movie_list.h5', key='df')
+with h5py.File('artificial/similarity.h5', 'r') as hf:
+    similarity = hf['similarity'][:]
+
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
@@ -36,7 +43,8 @@ selected_movie = st.selectbox(
 )
 
 if st.button('Show recommendation'):
-    recommended_movies_name, recommended_movies_poster = recommend(selected_movie)
+    recommended_movies_name, recommended_movies_poster = recommend(
+        selected_movie)
     col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
@@ -58,8 +66,3 @@ if st.button('Show recommendation'):
     with col5:
         st.text(recommended_movies_name[4])
         st.image(recommended_movies_poster[4])
-
-
-
-
-

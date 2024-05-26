@@ -2,4 +2,4 @@ streamlit
 requests
 pandas
 h5py
-tables==3.6.1
+tables
